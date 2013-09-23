@@ -31,23 +31,36 @@ parseUri.options = {
 	}
 };
 
+function isSingleUserDashAlready(currentUrl) {
+	return currentUrl.match(/singleuserdash\.joe\.im/i);
+}
+
 // Called when a message is passed.  We assume that the content script
 // wants to show the page action.
-function onRequest(request, sender, sendResponse) {
-	// If we're on www.tumblr.com then don't show it
-	
-	// This should probably be a regex or something less strict
-	/*
-	if(sender.tab.url.indexOf("//www.tumblr") > -1) { 
+function onRequest(request, sender, sendResponse) {	
+	var currentUrl = sender.tab.url,
+		currentTabId = sender.tab.id;
+	if(currentUrl.match(/www\.tumblr\.com/i)) {
+		// If we're on www.tumblr.com then don't show the button	
 		return;
 	}
-	*/
-	chrome.pageAction.show(sender.tab.id);	
+	if(isSingleUserDashAlready(currentUrl)) {
+		var details = {
+			title:"View with normal theme",
+			tabId: currentTabId
+		}
+		chrome.pageAction.setTitle(details);
+	}
+	chrome.pageAction.show(currentTabId);	
 	sendResponse({});   
 };
 // end parseuri 
 function buildSingleUserDashUrl(username) {
 	return "http://singleuserdash.joe.im/" + username;
+}
+
+function buildTumblrUrl(username) {
+	return "http://" + username + ".tumblr.com";
 }
 
 function withCurrentTab(callback) {
@@ -65,10 +78,24 @@ function parseUsernameFromUrl(toParse) {
 	return hostname.slice(0, hostname.indexOf("."));		
 }
 
+function parseUsernameFromDashUrl(toParse) {
+	var url =  parseUri(toParse);
+	var username = url["file"].slice(1);
+	return username;
+}
+
 function onPageActionClicked(tab) {
-	withCurrentTab(function(ctab) {	
-		var username = parseUsernameFromUrl(ctab.url);
-		var finalUrl = buildSingleUserDashUrl(username);
+	withCurrentTab(function(ctab) {
+		var currentUrl = ctab.url,
+			finalUrl = "";
+		// TODO: Make this less smelly
+		if(isSingleUserDashAlready(currentUrl)) {
+			var username = parseUsernameFromDashUrl(currentUrl);
+			finalUrl = buildTumblrUrl(username);
+		} else {
+			var username = parseUsernameFromUrl(currentUrl);
+			finalUrl = buildSingleUserDashUrl(username);
+		}
 		navigate(ctab, finalUrl);
 	});
 }

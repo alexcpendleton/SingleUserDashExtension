@@ -21,11 +21,11 @@
 	},
 	"default_title": "Tumblr Single User Dash"
   }, 
-  "permissions":["windows","tabs","http://*.tumblr.com/*","https://*.tumblr.com/*"],
+  "permissions":["windows","tabs","http://*.tumblr.com/*","https://*.tumblr.com/*","http://singleuserdash.joe.im/*"],
   "content_scripts": [{
 	"js": ["singleuserdash.contentscript.js"],
 	"run_at": "document_start",
-	"matches": ["http://*.tumblr.com/*", "https://*.tumblr.com/*"],
+	"matches": ["http://*.tumblr.com/*", "https://*.tumblr.com/*", "http://singleuserdash.joe.im/*"],
 	"all_frames":false
   }],
   "author": "Alex Pendleton"
