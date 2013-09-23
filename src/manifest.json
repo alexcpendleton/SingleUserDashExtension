@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Single User Dash",
-  "description": "Single User Dash",
+  "name": "Tumblr Single User Dash",
+  "description": "Tumblr Single User Dash - Making tumblr readable",
   "version": "1.0",
   "background":{
 	"scripts":["singleuserdash.background.js"]
@@ -10,9 +10,10 @@
     "default_icon":{
 		"38":"icon38.png",
 		"19":"icon19.png",
-		"16":"icon16.png"
+		"16":"icon16.png",
+		"128":"icon128.png"
 	  },
-	"default_title": "Single User Dash"
+	"default_title": "Tumblr Single User Dash"
   }, 
   "permissions":["windows","tabs","http://*.tumblr.com/*","https://*.tumblr.com/*"],
   "content_scripts": [{
