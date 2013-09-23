@@ -46,7 +46,6 @@ function onRequest(request, sender, sendResponse) {
 	sendResponse({});   
 };
 // end parseuri 
-
 function buildSingleUserDashUrl(username) {
 	return "http://singleuserdash.joe.im/" + username;
 }
@@ -54,7 +53,7 @@ function buildSingleUserDashUrl(username) {
 function withCurrentTab(callback) {
 	chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
 		callback(tabs[0]);
-	}
+	});
 }
 
 function navigate(tab, url) {		
@@ -86,4 +85,4 @@ chrome.extension.onRequest.addListener(onRequest);
 
 chrome.pageAction.onClicked.addListener(onPageActionClicked);
 
-chrome.omnibox.onInputChanged.addListener(onOmniboxInputEntered)
+chrome.omnibox.onInputEntered.addListener(onOmniboxInputEntered)

@@ -21,6 +21,6 @@
 	"matches": ["http://*.tumblr.com/*", "https://*.tumblr.com/*"],
 	"all_frames":false
   }],
-  "author": "Alex Pendleton",
-  "omnibox": { "keyword":"sud" }
+  "author": "Alex Pendleton"
+  , "omnibox": { "keyword":"sdash" }
 }
