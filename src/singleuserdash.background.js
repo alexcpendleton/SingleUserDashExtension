@@ -34,29 +34,50 @@ parseUri.options = {
 // Called when a message is passed.  We assume that the content script
 // wants to show the page action.
 function onRequest(request, sender, sendResponse) {
-	// Show the page action for the tab that the sender (content script)
-	// was on.
-	chrome.pageAction.show(sender.tab.id);
+	// If we're on www.tumblr.com then don't show it
 	
-	// Return nothing to let the connection be cleaned up.
+	// This should probably be a regex or something less strict
+	/*
+	if(sender.tab.url.indexOf("//www.tumblr") > -1) { 
+		return;
+	}
+	*/
+	chrome.pageAction.show(sender.tab.id);	
 	sendResponse({});   
 };
+// end parseuri 
+
+function buildSingleUserDashUrl(username) {
+	return "http://singleuserdash.joe.im/" + username;
+}
+
+function withCurrentTab(callback) {
+	chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+		callback(tabs[0]);
+	}
+}
+
+function navigate(tab, url) {		
+	chrome.tabs.update(tab.id, { "url": url }, function() { });	
+}
+function parseUsernameFromUrl(toParse) {
+	var url = parseUri(toParse);
+	var hostname = url["host"];
+	return hostname.slice(0, hostname.indexOf("."));		
+}
 
 function onPageActionClicked(tab) {
-	console.log("single user dash clicked!");
-	chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-		var ctab = tabs[0];
-		var url = parseUri(ctab.url);
-		console.log(url);
-		var hostname = url["host"];
-		console.log(hostname);
-		var username = hostname.slice(0, hostname.indexOf("."));
-		
-		var finalUrl = "http://singleuserdash.joe.im/" + username;
-		
-		chrome.tabs.update(ctab.id, { "url": finalUrl }, function() {
-		
-		});
+	withCurrentTab(function(ctab) {	
+		var username = parseUsernameFromUrl(ctab.url);
+		var finalUrl = buildSingleUserDashUrl(username);
+		navigate(ctab, finalUrl);
+	});
+}
+
+function onOmniboxInputEntered(text, disposition) {
+	var url = buildSingleUserDashUrl(text);
+	withCurrentTab(function(ctab) {
+		navigate(ctab, url);
 	});
 }
 
@@ -64,3 +85,5 @@ function onPageActionClicked(tab) {
 chrome.extension.onRequest.addListener(onRequest);
 
 chrome.pageAction.onClicked.addListener(onPageActionClicked);
+
+chrome.omnibox.onInputChanged.addListener(onOmniboxInputEntered)
