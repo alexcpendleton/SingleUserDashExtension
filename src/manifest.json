@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Tumblr Single User Dash",
   "description": "Tumblr Single User Dash - Making tumblr readable",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "background":{
 	"scripts":["singleuserdash.background.js"]
   },
